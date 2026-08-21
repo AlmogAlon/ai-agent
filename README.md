@@ -36,8 +36,20 @@ Inspect stored history:
 curl localhost:8001/history/<session_id>
 ```
 
+## Observe agent actions
+
+Agent runs are logged to the application output. With Docker Compose, follow them with:
+
+```bash
+docker compose logs -f agent
+```
+
+Each run logs model iterations, native tool calls and their results. Tool arguments and
+results are truncated to 500 characters, but may still contain user data, so treat these
+development logs as sensitive.
+
 ## Notes
 
 - Requests use the OpenAI API and therefore require API access and may incur usage charges.
 - Redis has no persistent volume by default, so conversation history is lost on `docker compose down`. Add a volume to the `redis` service in `docker-compose.yml` if you want it to survive restarts.
-- Add tools by registering them in `app/tools.py`; the ReAct loop in `app/agent.py` already knows how to call them.
+- Add tools by registering them in `app/tools.py`; the native tool-calling loop in `app/agent.py` already knows how to call them.

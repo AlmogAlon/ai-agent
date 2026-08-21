@@ -23,7 +23,8 @@ class AgentTests(unittest.TestCase):
             SimpleNamespace(id="response-2", output=[], output_text="123 × 456 = 56088"),
         ]
 
-        answer = run_agent("session-1", "What is 123 * 456?")
+        with self.assertLogs("uvicorn.error", level="INFO") as logs:
+            answer = run_agent("session-1", "What is 123 * 456?")
 
         self.assertEqual(answer, "123 × 456 = 56088")
         second_request = generate.call_args_list[1].kwargs
@@ -44,6 +45,13 @@ class AgentTests(unittest.TestCase):
                 call("session-1", "assistant", "123 × 456 = 56088"),
             ]
         )
+        output = "\n".join(logs.output)
+        self.assertIn("agent.tool_started", output)
+        self.assertIn("tool=calculator", output)
+        self.assertIn('arguments={"expression":"123 * 456"}', output)
+        self.assertIn("agent.tool_completed", output)
+        self.assertIn("result=56088", output)
+        self.assertIn("agent.run_completed", output)
 
 
 if __name__ == "__main__":

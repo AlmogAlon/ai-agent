@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from app.agent import run_agent
 from app.memory import get_history
 
-app = FastAPI(title="Simple ReAct Agent")
+app = FastAPI(title="Simple Tool-Calling Agent")
 
 
 class ChatRequest(BaseModel):

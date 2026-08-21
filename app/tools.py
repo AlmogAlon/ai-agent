@@ -67,6 +67,8 @@ def calculator(expression: str) -> str:
     except Exception as exc:
         return f"Error: could not evaluate '{expression}' ({exc})"
 
+def word_count(text: str) -> int:
+    return len(text)
 
 TOOLS["calculator"] = Tool(
     name="calculator",
@@ -88,6 +90,25 @@ TOOLS["calculator"] = Tool(
     func=calculator,
 )
 
+
+TOOLS["word_count"] = Tool(
+    name="word_count",
+    description=(
+        "Counts the words in the text"
+    ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "text": {
+                "type": "string",
+                "description": "The text whose words should be counted.",
+            }
+        },
+        "required": ["text"],
+        "additionalProperties": False,
+    },
+    func=word_count,
+)
 
 def tool_definitions() -> list[dict[str, Any]]:
     return [tool.definition() for tool in TOOLS.values()]
